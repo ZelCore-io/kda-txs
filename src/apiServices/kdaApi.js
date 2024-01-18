@@ -11,7 +11,9 @@ async function getTxs(req, res) {
     }
     let { namespace } = req.params;
     namespace = namespace || req.query.namespace || 'coin';
-    const txs = await kdaService.getTxsForAccount(account, namespace) || [];
+    let { limit } = req.params;
+    limit = Number(limit || req.query.limit || 50) || 50;
+    const txs = await kdaService.getTxsForAccount(account, namespace, limit) || [];
     res.json(txs);
   } catch (error) {
     log.error(error);
