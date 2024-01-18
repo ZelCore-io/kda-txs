@@ -16,7 +16,7 @@ async function getMultipleTxs(requestKeys) {
   // if we have some missing request keys, we need to fetch them from the api
   // eslint-disable-next-line no-restricted-syntax
   for (const requestKey of missingRequestKeys) {
-    promises.push(serviceHelper.axiosGet(`${apiUrl}txs/tx?requestkey=${requestKey}`));
+    promises.push(serviceHelper.axiosGet(`${apiUrl}/txs/tx?requestkey=${requestKey}`));
   }
   if (promises.length) {
     const txDetailsFromApi = await Promise.all(promises).catch((e) => { console.log(e); return []; });
@@ -34,7 +34,7 @@ async function getMultipleTxs(requestKeys) {
 }
 
 async function getTxsForAccount(account, namespace) {
-  const txUrl = `${apiUrl}txs/account/${account}?token=${namespace}&offset=0&limit=50`;
+  const txUrl = `${apiUrl}/txs/account/${account}?token=${namespace}&offset=0&limit=50`;
   const { data } = await serviceHelper.axiosGet(txUrl, {
     timeout: 30000,
   });
@@ -42,7 +42,7 @@ async function getTxsForAccount(account, namespace) {
   const requestKeys = data.map((tx) => tx.requestKey); // this might take forever. Create new endpoint on api to get all txs for an address
   if (namespace !== 'coin') {
     // fetch for coin as well
-    const coinTxUrl = `${apiUrl}txs/account/${account}?token=coin&offset=0&limit=50`;
+    const coinTxUrl = `${apiUrl}/txs/account/${account}?token=coin&offset=0&limit=50`;
     const { data: coinData } = await serviceHelper.axiosGet(coinTxUrl, {
       timeout: 30000,
     });
