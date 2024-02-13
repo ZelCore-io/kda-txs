@@ -13,8 +13,8 @@ async function getTxs(req, res) {
     namespace = namespace || req.query.namespace || 'coin';
     let { limit } = req.params;
     limit = Number(limit || req.query.limit || 50) || 50;
-    if (limit > 5000) {
-      limit = 5000;
+    if (limit > 10000) {
+      limit = 10000;
     }
     const txs = await kdaService.getTxsForAccount(account, namespace, limit) || [];
     res.json(txs);
