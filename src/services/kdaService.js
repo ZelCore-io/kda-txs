@@ -21,7 +21,7 @@ async function getMultipleTxs(requestKeys) {
   // if we have some missing request keys, we need to fetch them from the api
   // eslint-disable-next-line no-restricted-syntax
   for (const requestKey of missingRequestKeys) {
-    promises.push(ppLimit(() => serviceHelper.axiosGet(`${apiUrl}/txs/tx?requestkey=${requestKey}`)));
+    promises.push(ppLimit(() => serviceHelper.axiosGet(`${apiUrl}/txs/txs?requestkey=${requestKey}`)));
   }
   if (promises.length) {
     console.log(`Fetching ${promises.length} txs from api`);
@@ -29,11 +29,11 @@ async function getMultipleTxs(requestKeys) {
     const txDetailsFromApi = data.filter((tx) => tx.status === 'fulfilled').map((tx) => tx.value);
     // eslint-disable-next-line no-restricted-syntax
     for (const tx of txDetailsFromApi) {
-      if (tx.data) {
+      if (tx.data && tx.data[0]) {
         // update these txs in our database
         // eslint-disable-next-line no-await-in-loop
-        await serviceHelper.findOneAndUpdateInDatabase(database, config.collections.txs, { requestKey: tx.data.requestKey }, { $set: tx.data }, { upsert: true });
-        txDetails.push(tx.data);
+        await serviceHelper.findOneAndUpdateInDatabase(database, config.collections.txs, { requestKey: tx.data[0].requestKey }, { $set: tx.data[0] }, { upsert: true });
+        txDetails.push(tx.data[0]);
       }
     }
   }
